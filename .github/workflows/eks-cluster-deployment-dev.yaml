@@ -1,0 +1,62 @@
+name: DEV Cluster Deployment
+
+on:
+  push:
+    paths:
+      - 'dev/cluster/*'
+      - '.github/workflows/eks-cluster-deployment-dev.yaml'
+
+env:
+  GITHUB_PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+jobs:
+  cluster-deployment-terraform-plan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Configure Git access
+        run: |
+          git config --global url."https://${GITHUB_PAT_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: dev/cluster
+
+      - name: Terraform Plan
+        run: terraform plan -no-color -out=tfplan
+        working-directory: dev/cluster
+      - name: Upload Terraform Plan
+        uses: actions/upload-artifact@v2
+        with:
+          name: tfplan
+          path: dev/cluster/tfplan
+  
+  cluster-deployment-terraform-apply:
+    runs-on: ubuntu-latest
+    environment: DEV
+    needs: [cluster-deployment-terraform-plan]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Configure Git access
+        run: |
+          git config --global url."https://${GITHUB_PAT_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+      
+      - name: Download Terraform Plan
+        uses: actions/download-artifact@v2
+        with:
+          name: tfplan
+          path: dev/cluster
+
+      - name: Terraform Apply
+        working-directory: dev/cluster
+        run: |
+          terraform init
+          terraform apply -auto-approve tfplan
