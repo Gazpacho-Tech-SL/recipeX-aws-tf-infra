@@ -16,9 +16,8 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   
 jobs:
-  plan-networking:
+  destroy-plan-networking:
     runs-on: ubuntu-latest
-    needs: [destroy-cluster]
 
     steps:
       - name: Checkout code
@@ -45,7 +44,7 @@ jobs:
 
   destroy-networking:
     runs-on: ubuntu-latest
-    needs: [plan-networking]
+    needs: [destroy-plan-networking]
     if: ${{ github.event.inputs.action == 'destroy' }}
     environment:
       name: DEV
@@ -70,7 +69,7 @@ jobs:
           terraform init
           terraform apply -auto-approve tfplan
 
-  plan-cluster:
+  destroy-plan-cluster:
     runs-on: ubuntu-latest
 
     steps:
@@ -97,7 +96,7 @@ jobs:
 
   destroy-cluster:
     runs-on: ubuntu-latest
-    needs: [plan-cluster]
+    needs: [destroy-plan-cluster]
     if: ${{ github.event.inputs.action == 'destroy' }}
     environment:
       name: DEV

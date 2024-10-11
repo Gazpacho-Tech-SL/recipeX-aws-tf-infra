@@ -30,6 +30,7 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -no-color -out=tfplan
         working-directory: dev/cluster
+
       - name: Upload Terraform Plan
         uses: actions/upload-artifact@v2
         with:
