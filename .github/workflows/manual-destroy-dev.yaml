@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Configure Git access
         run: |
@@ -36,7 +36,7 @@ jobs:
         working-directory: dev/networking
 
       - name: Upload Terraform Plan Destroy (Networking)
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         id: upload
         with:
           name: tfplan
@@ -51,14 +51,14 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Configure Git access
         run: |
           git config --global url."https://${GITHUB_PAT_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
 
       - name: Download Terraform Plan Destroy (Networking)
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: tfplan
           path: dev/networking
@@ -74,7 +74,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Configure Git access
         run: |
@@ -89,7 +89,7 @@ jobs:
         working-directory: dev/cluster
 
       - name: Upload Terraform Plan Destroy (Cluster)
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: tfplan
           path: dev/cluster/tfplan
@@ -103,14 +103,14 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Configure Git access
         run: |
           git config --global url."https://${GITHUB_PAT_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
 
       - name: Download Terraform Plan Destroy (Cluster)
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: tfplan
           path: dev/cluster
